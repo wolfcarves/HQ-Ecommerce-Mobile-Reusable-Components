@@ -47,8 +47,6 @@ const Button = (
 ) => {
   const { colors } = useAppTheme()
 
-  const a = 0
-
   const variantStyles: Partial<Record<ButtonVariants, any>> = StyleSheet.create(
     {
       primary: {
