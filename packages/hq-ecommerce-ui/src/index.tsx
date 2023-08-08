@@ -1,5 +1,7 @@
 export { default as Accordion } from './components/Accordion/Accordion'
 export { default as Button } from './components/Button/Button'
 export { default as Breadcrumbs } from './components/Breadcrumbs/Breadcrumbs'
+export { default as BaseCard } from './components/Card/BaseCard'
 export { default as ThemeProvider } from './components/ThemeProvider/ThemeProvider'
 export { default as Theme } from './components/ThemeProvider/Theme'
+export { useAppTheme } from './hooks/useAppTheme'

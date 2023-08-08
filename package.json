@@ -9,7 +9,8 @@
       "packages/*"
    ],
    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+      "start": "npm start -w apps/mobile",
+      "reset": "cd apps/mobile && npx react-native start --reset-cache"
    },
    "keywords": [],
    "author": "",

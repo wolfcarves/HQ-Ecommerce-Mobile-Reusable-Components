@@ -1,22 +1,30 @@
 import React from 'react'
 import { View, Text, Pressable, StyleSheet } from 'react-native'
-import { useNavigation, ParamListBase } from '@react-navigation/native'
+import {
+  useNavigation,
+  ParamListBase,
+} from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useAppTheme } from '../../hooks/useAppTheme'
 import Entypo from 'react-native-vector-icons/Entypo'
 
-type Content = {
+type ContentProps = {
   label: string | null
   componentName: string
-}[]
-
-interface BreadcrumbsProps {
-  content: Content
 }
 
-const Breadcrumbs = ({ content }: BreadcrumbsProps) => {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>()
-  const { colors } = useAppTheme()
+interface BreadcrumbsProps {
+  content: ContentProps[]
+  customLinkComponent?: (props: ContentProps) => React.ReactNode
+}
+
+const Breadcrumbs = ({
+  content,
+  customLinkComponent,
+}: BreadcrumbsProps) => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ParamListBase>>()
+  const { colors, fonts } = useAppTheme()
 
   const LinkSeperator = () => (
     <Entypo
@@ -27,17 +35,20 @@ const Breadcrumbs = ({ content }: BreadcrumbsProps) => {
     />
   )
 
-  const Link = ({
-    label,
-    componentName,
-  }: {
-    label: string | null
-    componentName: string
-  }) => (
-    <Pressable onPress={() => navigation.navigate(componentName)}>
-      <Text style={{ color: colors.black }}>{label}</Text>
-    </Pressable>
-  )
+  const LinkComponent =
+    customLinkComponent ||
+    (({ label, componentName }: ContentProps) => (
+      <Pressable onPress={() => navigation.navigate(componentName)}>
+        <Text
+          style={{
+            color: colors.black,
+            fontFamily: fonts.medium.fontFamily,
+          }}
+        >
+          {label}
+        </Text>
+      </Pressable>
+    ))
 
   const renderedLinks: React.ReactNode[] = []
 
@@ -46,10 +57,15 @@ const Breadcrumbs = ({ content }: BreadcrumbsProps) => {
     index: number,
   ) => {
     renderedLinks.push(
-      <Link label={item.label} componentName={item.componentName} />,
+      <LinkComponent
+        key={renderedLinks.length}
+        label={item.label}
+        componentName={item.componentName}
+      />,
     )
-    {
-      index !== content.length - 1 && renderedLinks.push(<LinkSeperator />)
+
+    if (index !== content.length - 1) {
+      renderedLinks.push(<LinkSeperator key={renderedLinks.length} />)
     }
   }
 

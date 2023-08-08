@@ -15,8 +15,8 @@ export type RootStackParamListProps = {
 
 const Stack = createNativeStackNavigator<RootStackParamListProps>()
 
-import Home from 'src/pages/Home'
-import Profile from 'src/pages/Profile'
+import Home from 'src/screens/Home'
+import Profile from 'src/screens/Profile'
 
 const options: NativeStackNavigationOptions = {
   headerShown: false,

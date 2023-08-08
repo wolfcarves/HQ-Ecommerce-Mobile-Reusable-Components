@@ -1,5 +1,5 @@
-import React, { forwardRef, ForwardedRef } from 'react'
-import { View, StyleSheet, StyleProp, ViewStyle, Text } from 'react-native'
+import React from 'react'
+import { StyleSheet, StyleProp, ViewStyle, Text } from 'react-native'
 import {
   Button as RNPButton,
   ButtonProps as RNPButtonProps,
@@ -14,10 +14,10 @@ export type ButtonVariants =
   | 'muted'
   | 'outlined'
 
-interface ButtonProps extends Omit<RNPButtonProps, 'children' | 'icon'> {
+interface ButtonProps
+  extends Omit<RNPButtonProps, 'children' | 'icon'> {
   variant: ButtonVariants
-  title: string
-  rippled: boolean
+  text: string
   paddingBlock: number
   backgroundColor: string
   color: string
@@ -28,70 +28,64 @@ interface ButtonProps extends Omit<RNPButtonProps, 'children' | 'icon'> {
   icon: React.ReactNode
 }
 
-const Button = (
-  {
-    variant = 'primary',
-    title,
-    rippled,
-    paddingBlock,
-    backgroundColor,
-    color,
-    reverse,
-    icon,
-    shadow,
-    disabled,
-    style,
-    ...props
-  }: Partial<ButtonProps>,
-  ref: ForwardedRef<View>,
-) => {
-  const { colors } = useAppTheme()
+const Button = ({
+  variant = 'primary',
+  text,
+  paddingBlock,
+  backgroundColor,
+  color,
+  reverse,
+  icon,
+  shadow,
+  disabled,
+  style,
+  ...props
+}: Partial<ButtonProps>) => {
+  const { colors, fonts } = useAppTheme()
 
-  const variantStyles: Partial<Record<ButtonVariants, any>> = StyleSheet.create(
-    {
-      primary: {
-        borderWidth: disabled ? 0 : 1,
-        borderColor: colors.hq.black,
-        borderRadius: 50,
-        backgroundColor: colors.white,
-        color: disabled ? colors.white : colors.hq.black,
-      },
-      secondary: {
-        borderWidth: disabled ? 0 : 1,
-        borderColor: colors.hq.black,
-        borderRadius: 8,
-        backgroundColor: colors.white,
-        color: disabled ? colors.white : colors.hq.black,
-      },
-      tertiary: {
-        borderRadius: 50,
-        backgroundColor: colors.hq.black,
-        color: colors.white,
-      },
-      sidebarLink: {
-        borderRadius: 8,
-        backgroundColor: colors.hq.black,
-        color: colors.white,
-      },
-      muted: {
-        borderRadius: 50,
-        backgroundColor: colors.white,
-        color: disabled ? colors.white : colors.hq.black,
-      },
-      outlined: {
-        borderWidth: disabled ? 0 : 1,
-        borderColor: colors.hq.black,
-        color: disabled ? colors.white : colors.hq.black,
-      },
+  const variantStyles: Partial<Record<ButtonVariants, any>> = {
+    primary: {
+      borderWidth: disabled ? 0 : 1,
+      borderColor: colors.hq.black,
+      borderRadius: 50,
+      backgroundColor: colors.white,
+      color: disabled ? colors.white : colors.hq.black,
     },
-  )
+    secondary: {
+      borderWidth: disabled ? 0 : 1,
+      borderColor: colors.hq.black,
+      borderRadius: 8,
+      backgroundColor: colors.white,
+      color: disabled ? colors.white : colors.hq.black,
+    },
+    tertiary: {
+      borderRadius: 50,
+      backgroundColor: colors.hq.black,
+      color: colors.white,
+    },
+    sidebarLink: {
+      borderRadius: 8,
+      backgroundColor: colors.hq.black,
+      color: colors.white,
+    },
+    muted: {
+      borderRadius: 50,
+      backgroundColor: colors.white,
+      color: disabled ? colors.white : colors.hq.black,
+    },
+    outlined: {
+      borderWidth: disabled ? 0 : 1,
+      borderColor: colors.hq.black,
+      color: disabled ? colors.white : colors.hq.black,
+    },
+  }
 
-  const generalStyle = [variantStyles[variant], style]
+  const styles = StyleSheet.create([variantStyles[variant], style])
 
   const contentStyle: StyleProp<ViewStyle> = {
     flexDirection: reverse ? 'row-reverse' : 'row',
     paddingVertical: paddingBlock ? paddingBlock : 0,
-    paddingLeft: title ? 0 : 12, //This will center the ActivityIndicator if title was not found
+    paddingLeft: text ? 0 : 12, //This will center the ActivityIndicator if text was not found
     backgroundColor:
       backgroundColor && !disabled
         ? backgroundColor
@@ -102,8 +96,8 @@ const Button = (
 
   return (
     <RNPButton
-      ref={ref}
-      style={generalStyle}
+      style={styles}
+      disabled={disabled}
       contentStyle={contentStyle}
       mode={shadow ? 'elevated' : 'text'}
       textColor={color ? color : variantStyles[variant].color}
@@ -111,9 +105,11 @@ const Button = (
       icon={() => icon}
       {...props}
     >
-      {title}
+      <Text style={{ fontFamily: fonts.medium.fontFamily }}>
+        {text}
+      </Text>
     </RNPButton>
   )
 }
 
-export default forwardRef(Button)
+export default Button
